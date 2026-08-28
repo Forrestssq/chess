@@ -1,0 +1,25 @@
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+Icon
+._*
+
+# vscode
+.vscode/
+.luarc.json
+.idea/
+
+# love 2D
+*.love
+*.exe
+*.app/
+build/
+dist/
+
+# lua
+*.luac
+
+# log
+*.log
+*.tmp
