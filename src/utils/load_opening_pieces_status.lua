@@ -18,47 +18,47 @@ local function load_opening_board_status(start_w_or_b)
         -- 插入 Pawn
         for i = 1, 8 do
             local wP = Piece('w', 'P')
-            opening_board_status[2][i] = wP
+            opening_board_status[i][2] = wP
             
             local bP = Piece('b', 'P')
-            opening_board_status[7][i] = bP
+            opening_board_status[i][7] = bP
         end
 
         -- Rook
         local wR = Piece('w', 'R')
         opening_board_status[1][1] = wR
-        opening_board_status[1][8] = wR
+        opening_board_status[8][1] = wR
         local bR = Piece('b', 'R')
-        opening_board_status[8][1] = bR
+        opening_board_status[1][8] = bR
         opening_board_status[8][8] = bR
 
         -- Knight
         local wN = Piece('w', 'N')
-        opening_board_status[1][2] = wN
-        opening_board_status[1][7] = wN
+        opening_board_status[2][1] = wN
+        opening_board_status[7][1] = wN
         local bN = Piece('b', 'N')
-        opening_board_status[8][2] = bN
-        opening_board_status[8][7] = bN
+        opening_board_status[2][8] = bN
+        opening_board_status[7][8] = bN
 
         -- Biship
         local wB = Piece('w', 'B')
-        opening_board_status[1][3] = wB
-        opening_board_status[1][6] = wB
+        opening_board_status[3][1] = wB
+        opening_board_status[6][1] = wB
         local bB = Piece('b', 'B')
-        opening_board_status[8][3] = bB
-        opening_board_status[8][6] = bB
+        opening_board_status[3][8] = bB
+        opening_board_status[6][8] = bB
 
         -- Queen
         local wQ = Piece('w', 'Q')
-        opening_board_status[1][4] = wQ
+        opening_board_status[4][1] = wQ
         local bQ = Piece('b', 'Q')
-        opening_board_status[8][4] = bQ
+        opening_board_status[4][8] = bQ
 
         -- King
         local wK = Piece('w', 'K')
-        opening_board_status[1][5] = wK
+        opening_board_status[5][1] = wK
         local bK = Piece('b', 'K')
-        opening_board_status[8][5] = bK
+        opening_board_status[5][8] = bK
         
     -- 自己是黑方
     elseif start_w_or_b:sub(1, 1) == 'b' then
@@ -66,47 +66,47 @@ local function load_opening_board_status(start_w_or_b)
         -- 插入 Pawn
         for i = 1, 8 do
             local bP = Piece('b', 'P')
-            opening_board_status[2][i] = bP
+            opening_board_status[i][2] = bP
             
             local wP = Piece('w', 'P')
-            opening_board_status[7][i] = wP
+            opening_board_status[i][7] = wP
         end
 
         -- Rook
         local bR = Piece('b', 'R')
         opening_board_status[1][1] = bR
-        opening_board_status[1][8] = bR
+        opening_board_status[8][1] = bR
         local wR = Piece('w', 'R')
-        opening_board_status[8][1] = wR
+        opening_board_status[1][8] = wR
         opening_board_status[8][8] = wR
 
         -- Knight
         local bN = Piece('b', 'N')
-        opening_board_status[1][2] = bN
-        opening_board_status[1][7] = bN
+        opening_board_status[2][1] = bN
+        opening_board_status[7][1] = bN
         local wN = Piece('w', 'N')
-        opening_board_status[8][2] = wN
-        opening_board_status[8][7] = wN
+        opening_board_status[2][8] = wN
+        opening_board_status[7][8] = wN
 
         -- Biship
         local bB = Piece('b', 'B')
-        opening_board_status[1][3] = bB
-        opening_board_status[1][6] = bB
+        opening_board_status[3][1] = bB
+        opening_board_status[6][1] = bB
         local wB = Piece('w', 'B')
-        opening_board_status[8][3] = wB
-        opening_board_status[8][6] = wB
+        opening_board_status[3][8] = wB
+        opening_board_status[6][8] = wB
 
         -- Queen
         local bQ = Piece('b', 'Q')
-        opening_board_status[1][4] = bQ
+        opening_board_status[4][1] = bQ
         local wQ = Piece('w', 'Q')
-        opening_board_status[8][4] = wQ
+        opening_board_status[4][8] = wQ
 
         -- King
         local bK = Piece('b', 'K')
-        opening_board_status[1][5] = bK
+        opening_board_status[5][1] = bK
         local wK = Piece('w', 'K')
-        opening_board_status[8][5] = wK
+        opening_board_status[5][8] = wK
     else
         -- 防止我自己手贱写错了
         error("Piece 的 Color 只能是 white/w 或 black/b")

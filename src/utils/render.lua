@@ -34,8 +34,8 @@ function render.draw_chessboard()
 end
 
 ---@param piece love.Image
----@param col number
----@param row number
+---@param col integer
+---@param row integer
 function render.draw_piece(piece, col, row)
     love.graphics.draw(piece, 
     (col - 1) * SIZE, 
@@ -54,13 +54,38 @@ end
 function render.display()
     for col = 1, 8 do
         for row = 1, 8 do
-            if BOARD[row][col] ~= 0 then
-                local name = BOARD[row][col]:name()
+            if BOARD[col][row] ~= 0 then
+                local name = BOARD[col][row]:name()
                 local icon = PIECES_ICON_DICT[name]
                 render.draw_piece(icon, col, row)
             end
         end
     end
 end
+
+-- 当点击一个棋子的时候， hightlight 它所在的格子
+---@param col integer
+---@param row integer
+function render.highlight_piece(col, row)
+    -- 存下原来的颜色。 注意哦， getColor() 返回 4 个数字
+    local r, g, b, a = love.graphics.getColor()
+    local w = love.graphics.getLineWidth()
+
+    love.graphics.setColor(1, 1, 0, 0.4)
+    
+    love.graphics.rectangle(
+        ---@diagnostic disable-next-line
+        'fill',
+        (col - 1) * SIZE, -- 画图的时候的坐标从左上角开始算 0 ，所以 -1
+        (8 - row) * SIZE, -- 画图的时候的坐标从左上角开始算 0 ，所以用 8 - row 而不是 9 - row
+        SIZE,
+        SIZE
+    )
+
+    -- 重新设定回原来的颜色
+    love.graphics.setColor(r, g, b, a)
+    love.graphics.setLineWidth(w)
+end
+
 
 return render
