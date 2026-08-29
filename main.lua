@@ -4,19 +4,18 @@ if os.getenv("LOCAL_LUA_DEBUGGER_VSCODE") == "1" then
 end
 
 Object = require 'libs/classic'
-Piece = require 'piece_class'
+Piece = require 'src/utils/piece_class'
 
-draw_chessboard = require 'chessboard'
-pieces_table = require 'load_pieces'
-draw_piece = require 'draw_piece'
+draw_chessboard = require 'src/utils/chessboard'
+pieces_table = require 'src/utils/load_pieces'
+draw_piece = require 'src/utils/draw_piece'
 
 -- 这个 pieces_status 的格式是： 一个 piece 用一个 piece_class 记录。
-board = require 'load_opening_pieces_status'
-display = require 'display'
+load_board = require 'src/utils/load_opening_pieces_status'
+display = require 'src/utils/display'
 function love.load()
     love.graphics.setBackgroundColor(0, 0, 0)
-    board = board('w')
-    
+    board = load_board('w')
 end
 
 function love.update(dt)
@@ -34,3 +33,21 @@ function love.keypressed(key)
         love.event.quit()
     end
 end
+
+function love.mousepressed(x, y, button, istouch, presses)
+    -- x, y: 按下位置(像素)
+    -- button: 1=左键, 2=右键, 3=中键
+end
+
+function love.mousereleased(x, y, button, istouch, presses)
+    
+end
+
+function love.mousemoved(x, y, dx, dy, istouch)
+    
+end
+
+function love.wheelmoved(dx, dy)
+    
+end
+

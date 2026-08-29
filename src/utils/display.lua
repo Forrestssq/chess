@@ -10,7 +10,7 @@ local function display()
             if board[i][j] ~= 0 then
                 local name = board[i][j]:name()
                 local icon = pieces_table[name]
-                draw_piece(icon, j, 9 - i)
+                draw_piece(icon, j, i)
             end
         end
     end
