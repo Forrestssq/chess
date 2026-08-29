@@ -33,7 +33,6 @@ function coord.is_click_valid(col, row)
     local piece_name =  value:name()
     print(piece_name)
     if START_WITH:sub(1, 1) ~= piece_name:sub(1, 1) then
-        print("----I'm in")
         return false
     end
     ---@diagnostic disable

@@ -19,7 +19,7 @@ local coord = require("src.utils.coord")
 
 -- 记录是否有棋子被选中
 local selected = false
-local selected_col, selected_row = 0, 0
+local selected_col, selected_row = nil, nil
 function love.load()
     love.graphics.setBackgroundColor(0, 0, 0)
 end
@@ -42,8 +42,6 @@ function love.keypressed(key)
     end
 end
 
-
-
 function love.mousepressed(x, y, button, istouch, presses)
     -- x, y: 按下位置(像素)
     -- button: 1=左键, 2=右键, 3=中键
@@ -56,8 +54,23 @@ function love.mousepressed(x, y, button, istouch, presses)
         selected = true
         selected_col = col
         selected_row = row
-    else
-        selected = false
+    -- else
+    --     selected = false
+    --     selected_col = nil
+    --     selected_row = nil
+    end
+
+    -- 判断是不是点击了同一个位置的棋子
+    if selected and ((col ~= selected_col) or (row ~= selected_row)) then
+        ---@diagnostic disable-next-line
+        local piece = BOARD[selected_col][selected_row]
+        ---@diagnostic disable-next-line
+        BOARD[selected_col][selected_row] = 0
+        ---@diagnostic disable-next-line
+        BOARD[col][row] = piece
+        selected_col = col
+        selected_row = row
+        selected = false    -- 下一步棋之后取消选中
     end
 end
 
@@ -72,4 +85,3 @@ end
 function love.wheelmoved(dx, dy)
     
 end
-
