@@ -7,7 +7,10 @@ end
 Object = require 'libs/classic'
 Piece = require 'src/utils/piece_class'
 
+-- 在 love.draw() 下调用 draw_chessboard 函数来画出chess的棋盘
 local draw_chessboard = require 'src/utils/chessboard'
+
+-- PIECES_ICON_DICT 用字典记录 每个棋子对应的 Image 对象 dict<棋子: love.Image>
 PIECES_ICON_DICT = require 'src/utils/load_pieces_icon'
 FUNC_DRAW_PIECE = require 'src/utils/draw_piece'
 
@@ -17,6 +20,7 @@ local load_board = require 'src/utils/load_opening_pieces_status'
 -- BOARD 8x8 的 table 负责当前棋盘的状态
 BOARD = load_board('w')
 
+-- 调用 display 这个 func 的时候，会根据 BOARD 记录的棋盘的当前的状况绘制出棋子
 local display = require 'src/utils/display'
 
 function love.load()
