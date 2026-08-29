@@ -7,7 +7,7 @@
 -- the terms of the MIT license. See LICENSE for details.
 --
 
-
+---@diagnostic disable
 local Object = {}
 Object.__index = Object
 
