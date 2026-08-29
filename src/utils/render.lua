@@ -87,5 +87,87 @@ function render.highlight_piece(col, row)
     love.graphics.setLineWidth(w)
 end
 
+-- 画出灰色的提示
+---@param col number
+---@param row number
+function draw_gray_spot(col, row)
+    local r, y, b, a = love.graphics.getColor()
+    love.graphics.setColor(0.6, 0.6, 0.6, 0.5)
+    love.graphics.circle(
+        ---@diagnostic disable-next-line
+        'fill',
+        SIZE / 2 + (col - 1) * SIZE,
+        SIZE / 2 + (8 - row) * SIZE,
+        SIZE / 3
+    )
+    love.graphics.setColor(r, y, b, a)
+end
+
+-- 给可以走的位置标出灰色点点。 
+---@param piece Piece
+---@param col number
+---@param row number
+function render.render_possible_pos(piece, col, row)
+    local possible_pos = {}
+    
+    -- 对角线的位置
+    local function insert_diagonal_pos()
+        local c1 = col
+        local r1 = row
+        for i = col, 8 do
+            c1 = c1 + 1
+            r1 = r1 + 1
+            table.insert(possible_pos, {c1, r1})
+        end
+
+        local c2 = col
+        local r2 = row
+        for i = col, 1, -1 do
+            c2 = c2 - 1
+            r2 = r2 - 1
+            table.insert(possible_pos, {c2, r2})
+        end
+    end
+
+    local function Biship()
+        insert_diagonal_pos()
+    end
+
+    local function King()
+        
+    end
+
+    local function Knight()
+        
+    end
+
+    local function Pawn()
+        
+    end
+
+    local function Qween()
+        insert_diagonal_pos()
+    end
+
+    local function Rook()
+        
+    end
+
+    local piece_type = piece:name():sub(2, 2)
+    print(piece_type)
+    if     piece_type == 'B' then Biship()
+    elseif piece_type == 'K' then King()
+    elseif piece_type == 'N' then Knight()
+    elseif piece_type == 'P' then Pawn()
+    elseif piece_type == 'Q' then Qween()
+    elseif piece_type == 'R' then Rook()
+    else error("You stupid fucking bitch.")
+    end
+
+    -- 画出来
+    for _, pos in pairs(possible_pos) do
+        draw_gray_spot(pos[1], pos[2])
+    end
+end
 
 return render

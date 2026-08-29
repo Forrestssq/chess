@@ -34,6 +34,10 @@ function love.draw()
         render.highlight_piece(selected_col, selected_row)
     end
     render.display()
+
+    if selected then
+        render.render_possible_pos(BOARD[selected_col][selected_row], selected_col, selected_row)
+    end
 end
 
 function love.keypressed(key)
@@ -54,13 +58,9 @@ function love.mousepressed(x, y, button, istouch, presses)
         selected = true
         selected_col = col
         selected_row = row
-    -- else
-    --     selected = false
-    --     selected_col = nil
-    --     selected_row = nil
     end
 
-    -- 判断是不是点击了同一个位置的棋子
+    -- 移动棋子
     if selected and ((col ~= selected_col) or (row ~= selected_row)) then
         ---@diagnostic disable-next-line
         local piece = BOARD[selected_col][selected_row]
@@ -72,6 +72,13 @@ function love.mousepressed(x, y, button, istouch, presses)
         selected_row = row
         selected = false    -- 下一步棋之后取消选中
     end
+
+    -- 两次点击的话， 当作取消
+    -- if selected and col == selected_col and row == selected_row then
+    --     selected = false
+    --     selected_col = nil
+    --     selected_row = nil
+    -- end
 end
 
 function love.mousereleased(x, y, button, istouch, presses)
