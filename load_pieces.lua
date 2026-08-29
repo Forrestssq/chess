@@ -1,4 +1,5 @@
 local function load_pieces()
+    ---@type table<string, love.Image>
     local output = {}
     for p in string.gmatch("BKNPQR", ".") do
         for c in string.gmatch("bw", '.') do

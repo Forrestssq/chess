@@ -18,15 +18,13 @@ function Piece:new(color, type)
     else
         error("Piece 的 Color 只能是 white/w 或 black/b")
     end
-
     
     self.type = type
-    self.has_moves = false
-
+    self.has_moves = false -- 记录棋子有没有移动过（ 王车易位，过路兵 ）
 end
 
 ---@return string
-function Piece:description()
+function Piece:name()
     return self.color .. self.type
 end
 
