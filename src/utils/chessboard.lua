@@ -9,6 +9,7 @@ local function draw_chessboard()
             else
                 love.graphics.setColor(0.8, 0.8, 0.8)
             end
+            ---@diagnostic disable-next-line
             love.graphics.rectangle("fill", col * SIZE, row * SIZE, SIZE, SIZE)
         end
     end

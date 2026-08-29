@@ -2,6 +2,7 @@
 local function load_opening_board_status(start_w_or_b)
     local opening_board_status = {}    
 
+    ---@diagnostic disable: call-non-callable
     -- 先创建 8x8 的列表，用 0 填满
     for i = 1, 8 do
         opening_board_status[i] = {}
@@ -9,7 +10,7 @@ local function load_opening_board_status(start_w_or_b)
             opening_board_status[i][j] = 0
         end
     end
-    io.write("----stop 1")
+
     -- 自己是白方
     if start_w_or_b:sub(1, 1) == 'w' then
         io.write("Start with white")

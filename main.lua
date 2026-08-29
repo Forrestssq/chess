@@ -1,21 +1,27 @@
 -- 在 VS Code 里按 F5 调试时自动挂上调试器
 if os.getenv("LOCAL_LUA_DEBUGGER_VSCODE") == "1" then
+    ---@diagnostic disable-next-line 
     require("lldebugger").start()
 end
 
 Object = require 'libs/classic'
 Piece = require 'src/utils/piece_class'
 
-draw_chessboard = require 'src/utils/chessboard'
-pieces_table = require 'src/utils/load_pieces'
-draw_piece = require 'src/utils/draw_piece'
+local draw_chessboard = require 'src/utils/chessboard'
+PIECES_DICT = require 'src/utils/load_pieces'
+FUNC_DRAW_PIECE = require 'src/utils/draw_piece'
 
 -- 这个 pieces_status 的格式是： 一个 piece 用一个 piece_class 记录。
-load_board = require 'src/utils/load_opening_pieces_status'
-display = require 'src/utils/display'
+local load_board = require 'src/utils/load_opening_pieces_status'
+
+-- BOARD 8x8 的 table 负责当前棋盘的状态
+BOARD = load_board('w')
+
+local display = require 'src/utils/display'
+
 function love.load()
     love.graphics.setBackgroundColor(0, 0, 0)
-    board = load_board('w')
+    
 end
 
 function love.update(dt)
@@ -24,7 +30,7 @@ end
 
 function love.draw()
     draw_chessboard() -- 画棋盘
-    draw_piece(pieces_table.wR, 1, 1)
+    FUNC_DRAW_PIECE(PIECES_DICT.wR, 1, 1)
     display()
 end
 
@@ -34,9 +40,14 @@ function love.keypressed(key)
     end
 end
 
+-- 记录是否有棋子被选中
+local selected = false
+
+
 function love.mousepressed(x, y, button, istouch, presses)
     -- x, y: 按下位置(像素)
     -- button: 1=左键, 2=右键, 3=中键
+
 end
 
 function love.mousereleased(x, y, button, istouch, presses)

@@ -6,11 +6,10 @@
 local function display()
     for i = 1, 8 do
         for j = 1, 8 do
-            j = 9 - j
-            if board[i][j] ~= 0 then
-                local name = board[i][j]:name()
-                local icon = pieces_table[name]
-                draw_piece(icon, j, i)
+            if BOARD[i][j] ~= 0 then
+                local name = BOARD[i][j]:name()
+                local icon = PIECES_DICT[name]
+                FUNC_DRAW_PIECE(icon, j, i)
             end
         end
     end
