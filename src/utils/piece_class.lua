@@ -1,3 +1,8 @@
+---@class Piece
+---@field color string
+---@field type string
+---@field has_moved boolean
+---@overload fun(color: string, type: string): Piece
 local Piece = Object:extend()
 
 ---comment
@@ -6,7 +11,7 @@ local Piece = Object:extend()
 function Piece:new(color, type)
     -- 检查类型合不合法
     local names = "KQRBNP"
-    local s, _ = names:find(type)
+    local s, _ = names:find(type) -- 它返回的是这个字符所在的 start 和 end 位置。没找到的话返回 nil 和 nil
     if s == nil then
         error("棋子名字错了，要在 KQRBNP 才合法")
     end
@@ -20,7 +25,7 @@ function Piece:new(color, type)
     end
     
     self.type = type
-    self.has_moves = false -- 记录棋子有没有移动过（ 王车易位，过路兵 ）
+    self.has_moved = false -- 记录棋子有没有移动过（ 王车易位，过路兵 ）
 end
 
 ---@return string

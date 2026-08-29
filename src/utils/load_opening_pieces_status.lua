@@ -1,8 +1,9 @@
 ---@param start_w_or_b string
 local function load_opening_board_status(start_w_or_b)
+    ---@type (Piece | integer)[][]
     local opening_board_status = {}    
 
-    ---@diagnostic disable: call-non-callable
+    ---@diagnostic disable: call-non-callable, need-check-nil
     -- 先创建 8x8 的列表，用 0 填满
     for i = 1, 8 do
         opening_board_status[i] = {}
@@ -13,7 +14,7 @@ local function load_opening_board_status(start_w_or_b)
 
     -- 自己是白方
     if start_w_or_b:sub(1, 1) == 'w' then
-        io.write("Start with white")
+        io.write("Start with white\n")
         -- 插入 Pawn
         for i = 1, 8 do
             local wP = Piece('w', 'P')
@@ -46,8 +47,6 @@ local function load_opening_board_status(start_w_or_b)
         local bB = Piece('b', 'B')
         opening_board_status[8][3] = bB
         opening_board_status[8][6] = bB
-        io.write('-----')
-        io.write(bB:name())
 
         -- Queen
         local wQ = Piece('w', 'Q')
@@ -63,6 +62,7 @@ local function load_opening_board_status(start_w_or_b)
         
     -- 自己是黑方
     elseif start_w_or_b:sub(1, 1) == 'b' then
+        io.write("Start with white\n")
         -- 插入 Pawn
         for i = 1, 8 do
             local bP = Piece('b', 'P')
@@ -108,6 +108,7 @@ local function load_opening_board_status(start_w_or_b)
         local wK = Piece('w', 'K')
         opening_board_status[8][5] = wK
     else
+        -- 防止我自己手贱写错了
         error("Piece 的 Color 只能是 white/w 或 black/b")
     end
 

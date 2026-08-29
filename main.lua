@@ -4,28 +4,19 @@ if os.getenv("LOCAL_LUA_DEBUGGER_VSCODE") == "1" then
     require("lldebugger").start()
 end
 
-Object = require 'libs/classic'
-Piece = require 'src/utils/piece_class'
+Object = require 'libs.classic'
+Piece = require 'src.utils.piece_class'
 
--- 在 love.draw() 下调用 draw_chessboard 函数来画出chess的棋盘
-local draw_chessboard = require 'src/utils/chessboard'
-
--- PIECES_ICON_DICT 用字典记录 每个棋子对应的 Image 对象 dict<棋子: love.Image>
-PIECES_ICON_DICT = require 'src/utils/load_pieces_icon'
-FUNC_DRAW_PIECE = require 'src/utils/draw_piece'
-
--- 这个 pieces_status 的格式是： 一个 piece 用一个 piece_class 记录。
-local load_board = require 'src/utils/load_opening_pieces_status'
-
--- BOARD 8x8 的 table 负责当前棋盘的状态
+-- 这个 pieces_status 的格式是： 一个 piece 用一个 piece_class 记录。BOARD 8x8 的 table 负责当前棋盘的状态
+local load_board = require 'src.utils.load_opening_pieces_status'
 BOARD = load_board('w')
 
--- 调用 display 这个 func 的时候，会根据 BOARD 记录的棋盘的当前的状况绘制出棋子
-local display = require 'src/utils/display'
+render = require 'src.utils.render'
+
+local coord = require("src.utils.coord")
 
 function love.load()
     love.graphics.setBackgroundColor(0, 0, 0)
-    
 end
 
 function love.update(dt)
@@ -33,9 +24,8 @@ function love.update(dt)
 end
 
 function love.draw()
-    draw_chessboard() -- 画棋盘
-    FUNC_DRAW_PIECE(PIECES_ICON_DICT.wR, 1, 1)
-    display()
+    render.draw_chessboard() -- 画棋盘
+    render.display()
 end
 
 function love.keypressed(key)
@@ -47,11 +37,15 @@ end
 -- 记录是否有棋子被选中
 local selected = false
 
-
 function love.mousepressed(x, y, button, istouch, presses)
     -- x, y: 按下位置(像素)
     -- button: 1=左键, 2=右键, 3=中键
 
+    -- 用左键点击才有效
+    if coord.is_left_button_click(button) then return end
+
+    local col, row = coord.pixel_to_cell(x, y)
+    
 end
 
 function love.mousereleased(x, y, button, istouch, presses)
