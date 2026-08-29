@@ -8,7 +8,7 @@ local function display()
         for j = 1, 8 do
             if BOARD[i][j] ~= 0 then
                 local name = BOARD[i][j]:name()
-                local icon = PIECES_DICT[name]
+                local icon = PIECES_ICON_DICT[name]
                 FUNC_DRAW_PIECE(icon, j, i)
             end
         end

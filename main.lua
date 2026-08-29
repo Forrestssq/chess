@@ -8,7 +8,7 @@ Object = require 'libs/classic'
 Piece = require 'src/utils/piece_class'
 
 local draw_chessboard = require 'src/utils/chessboard'
-PIECES_DICT = require 'src/utils/load_pieces'
+PIECES_ICON_DICT = require 'src/utils/load_pieces_icon'
 FUNC_DRAW_PIECE = require 'src/utils/draw_piece'
 
 -- 这个 pieces_status 的格式是： 一个 piece 用一个 piece_class 记录。
@@ -30,7 +30,7 @@ end
 
 function love.draw()
     draw_chessboard() -- 画棋盘
-    FUNC_DRAW_PIECE(PIECES_DICT.wR, 1, 1)
+    FUNC_DRAW_PIECE(PIECES_ICON_DICT.wR, 1, 1)
     display()
 end
 
