@@ -98,7 +98,7 @@ function draw_gray_spot(col, row)
         'fill',
         SIZE / 2 + (col - 1) * SIZE,
         SIZE / 2 + (8 - row) * SIZE,
-        SIZE / 3
+        SIZE / 3.5
     )
     love.graphics.setColor(r, y, b, a)
 end
@@ -154,7 +154,6 @@ function render.render_possible_pos(piece, col, row)
     end
 
     local piece_type = piece:name():sub(2, 2)
-    print(piece_type)
     if     piece_type == 'B' then Biship()
     elseif piece_type == 'K' then King()
     elseif piece_type == 'N' then Knight()

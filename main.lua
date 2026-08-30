@@ -32,12 +32,9 @@ function love.draw()
     render.draw_chessboard() -- 画棋盘
     if selected then
         render.highlight_piece(selected_col, selected_row)
-    end
-    render.display()
-
-    if selected then
         render.render_possible_pos(BOARD[selected_col][selected_row], selected_col, selected_row)
     end
+    render.display()
 end
 
 function love.keypressed(key)
@@ -54,10 +51,19 @@ function love.mousepressed(x, y, button, istouch, presses)
     if not coord.is_left_button_click(button) then return end
 
     local col, row = coord.pixel_to_cell(x, y)
+    
     if coord.is_click_valid(col, row) then
-        selected = true
-        selected_col = col
-        selected_row = row
+        print("______I'm in_______")
+        -- 两次点击的话， 当作取消
+        if (col == selected_col) and (row == selected_row) then
+            selected = false
+            selected_col = nil
+            selected_row = nil
+        else
+            selected = true
+            selected_col = col
+            selected_row = row            
+        end
     end
 
     -- 移动棋子
@@ -72,13 +78,8 @@ function love.mousepressed(x, y, button, istouch, presses)
         selected_row = row
         selected = false    -- 下一步棋之后取消选中
     end
+    print('\n')
 
-    -- 两次点击的话， 当作取消
-    -- if selected and col == selected_col and row == selected_row then
-    --     selected = false
-    --     selected_col = nil
-    --     selected_row = nil
-    -- end
 end
 
 function love.mousereleased(x, y, button, istouch, presses)

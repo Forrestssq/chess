@@ -31,7 +31,6 @@ function coord.is_click_valid(col, row)
     end
 
     local piece_name =  value:name()
-    print(piece_name)
     if START_WITH:sub(1, 1) ~= piece_name:sub(1, 1) then
         return false
     end
