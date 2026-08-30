@@ -111,8 +111,12 @@ end
 function render.render_possible_pos(piece, col, row)
     ---@type table
     local possible_table
-    
-    -- 用向量法插入返回多个方向的的位置
+
+    local function is_valid_pos(c, r)
+        return c > 0 and c < 9 and r > 0 and r < 9
+    end
+
+    -- 用向量法插入返回多个方向的的位置. BQK 专用
     -- 这个函数只用在 Queen Rook Bishop 这三个可以走很远的棋子 。 
     -- 返回的 table 由 多个 table 组成 。 每个 table 里面存着的是这个延伸方向可以走的位置
     -- TODO: 监测到路上有棋子的话， 截断剩下的部分
@@ -120,12 +124,12 @@ function render.render_possible_pos(piece, col, row)
     ---@param col number
     ---@param row number
     ---@return table
-    local function insert_vector_pos(dirs, col, row)
+    local function insert_vector_pos_BQK(dirs, col, row)
         local output = {}
         for _, d in ipairs(dirs) do
             local c, r = col + d[1], row + d[2]
             local line = {}
-            while c > 0 and c < 8 + 1 and r > 0 and r < 8 + 1 do
+            while is_valid_pos(c, r) do
                 table.insert(line, {c, r})
                 c = c + d[1]
                 r = r + d[2]
@@ -135,42 +139,44 @@ function render.render_possible_pos(piece, col, row)
         return output
     end
     
+    -- 与
+    local function insert_vector_pos_KN(dirs, col, row)
+        local output = {}
+        for _, pos in ipairs(dirs) do
+            local new_c = col + pos[1]
+            local new_r = row + pos[2]
+            if is_valid_pos(new_c, new_r) then
+                table.insert(output, {new_c, new_r})
+            end
+        end
+        return { output } -- 包裹一层， 保持和其他的一样的三层 table
+    end
+
     local function Bishop()
         local dirs_bishop = {{-1, 1}, {1, 1}, {-1, -1}, {1, -1}}
-        possible_table = insert_vector_pos(dirs_bishop, col, row)
+        possible_table = insert_vector_pos_BQK(dirs_bishop, col, row)
         print(possible_table)
     end
     
-    local function is_valid_pos(c, r)
-        return c > 0 and c < 9 and r > 0 and r < 9
+    local function Queen()
+        local dirs_queen = {{-1, 1}, {1, 1}, {-1, -1}, {1, -1}, {0, 1}, {0, -1}, {-1, 0}, {1, 0}}
+        possible_table = insert_vector_pos_BQK(dirs_queen, col, row)
+    end
+    
+    local function Rook()
+        local dirs_rook = {{0, 1}, {0, -1}, {-1, 0}, {1, 0}}
+        possible_table = insert_vector_pos_BQK(dirs_rook, col, row)
     end
 
+
     local function King()
-        local c, r = col, row
         local dirs_king = {{-1, 1}, {1, 1}, {-1, -1}, {1, -1}, {0, 1}, {0, -1}, {-1, 0}, {1, 0}}
-        local output = {}
-        for _, pos in ipairs(dirs_king) do
-            local new_c = c + pos[1]
-            local new_r = r + pos[2]
-            if is_valid_pos(new_c, new_r) then
-                table.insert(output, {new_c, new_r})
-            end
-        end
-        possible_table = { output } -- 包裹一层， 保持和其他的一样的三层 table
+        possible_table = insert_vector_pos_KN(dirs_king, col, row)
     end
     
     local function Knight()
-        local c, r = col, row
         local dirs_king = {{-1, 2}, {-2, 1}, {1, 2}, {2, 1}, {-2, -1}, {-1, -2}, {2, -1}, {1, -2}}
-        local output = {}
-        for _, pos in ipairs(dirs_king) do
-            local new_c = c + pos[1]
-            local new_r = r + pos[2]
-            if is_valid_pos(new_c, new_r) then
-                table.insert(output, {new_c, new_r})
-            end
-        end
-        possible_table = { output } -- 包裹一层， 保持和其他的一样的三层 table
+        possible_table = insert_vector_pos_KN(dirs_king, col, row)
     end
     
     local function Pawn()
@@ -188,17 +194,6 @@ function render.render_possible_pos(piece, col, row)
             table.insert(possible_table, {{}})
         end
     end
-    
-    local function Queen()
-        local dirs_queen = {{-1, 1}, {1, 1}, {-1, -1}, {1, -1}, {0, 1}, {0, -1}, {-1, 0}, {1, 0}}
-        possible_table = insert_vector_pos(dirs_queen, col, row)
-    end
-    
-    local function Rook()
-        local dirs_rook = {{0, 1}, {0, -1}, {-1, 0}, {1, 0}}
-        possible_table = insert_vector_pos(dirs_rook, col, row)
-    end
-    
     
     local piece_type = piece:name():sub(2, 2)
     if     piece_type == 'B' then Bishop() 
@@ -223,4 +218,5 @@ function render.render_possible_pos(piece, col, row)
 
     _draw_gray_spots(possible_table)
 end
+
 return render
