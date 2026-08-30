@@ -40,7 +40,7 @@ local function load_opening_board_status(start_w_or_b)
         opening_board_status[2][8] = bN
         opening_board_status[7][8] = bN
 
-        -- Biship
+        -- Bishop
         local wB = Piece('w', 'B')
         opening_board_status[3][1] = wB
         opening_board_status[6][1] = wB
@@ -88,7 +88,7 @@ local function load_opening_board_status(start_w_or_b)
         opening_board_status[2][8] = wN
         opening_board_status[7][8] = wN
 
-        -- Biship
+        -- Bishop
         local bB = Piece('b', 'B')
         opening_board_status[3][1] = bB
         opening_board_status[6][1] = bB
