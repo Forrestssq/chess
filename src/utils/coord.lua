@@ -6,8 +6,8 @@ local coord = {}
 ---@return integer, integer
 function coord.pixel_to_cell(x, y)
 
-    local col = math.ceil(x / SIZE)
-    local row = 9 - math.ceil(y / SIZE)
+    local col = math.ceil(x / TILE)
+    local row = 9 - math.ceil(y / TILE)
     return col, row
 end
 
@@ -17,8 +17,9 @@ function coord.is_left_button_click(button)
     return (button == 1)
 end
 
--- 判断点击的位置是不是点击有效的。“有效”指的是非空白的位置，即，点击的位置是棋子所在的位置
--- 如果点击的是 valid 的，那么返回这个位置上储存的 Piece（class）
+---判断点击的位置是不是点击有效的。“有效”指的是非空白的位置，即，点击的位置是棋子所在的位置
+---并且这个棋子是己方的棋子
+---如果点击的是 valid 的，那么返回这个位置上储存的 Piece（class）
 ---@param col integer
 ---@param row integer
 ---@diagnostic disable-next-line

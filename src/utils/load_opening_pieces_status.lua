@@ -62,7 +62,7 @@ local function load_opening_board_status(start_w_or_b)
         
     -- 自己是黑方
     elseif start_w_or_b:sub(1, 1) == 'b' then
-        io.write("Start with white\n")
+        io.write("Start with black\n")
         -- 插入 Pawn
         for i = 1, 8 do
             local bP = Piece('b', 'P')
