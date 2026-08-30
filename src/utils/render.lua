@@ -1,3 +1,4 @@
+local new = require("src.utils.piece_class").new
 local render = {}
 
 SIZE = 100
@@ -108,65 +109,118 @@ end
 ---@param col number
 ---@param row number
 function render.render_possible_pos(piece, col, row)
-    local possible_pos = {}
+    ---@type table
+    local possible_table
     
-    -- 对角线的位置
-    local function insert_diagonal_pos()
-        local c1 = col
-        local r1 = row
-        for i = col, 8 do
-            c1 = c1 + 1
-            r1 = r1 + 1
-            table.insert(possible_pos, {c1, r1})
+    -- 用向量法插入返回多个方向的的位置
+    -- 这个函数只用在 Queen Rook Bishop 这三个可以走很远的棋子 。 
+    -- 返回的 table 由 多个 table 组成 。 每个 table 里面存着的是这个延伸方向可以走的位置
+    -- TODO: 监测到路上有棋子的话， 截断剩下的部分
+    ---@param dirs table
+    ---@param col number
+    ---@param row number
+    ---@return table
+    local function insert_vector_pos(dirs, col, row)
+        local output = {}
+        for _, d in ipairs(dirs) do
+            local c, r = col + d[1], row + d[2]
+            local line = {}
+            while c > 0 and c < 8 + 1 and r > 0 and r < 8 + 1 do
+                table.insert(line, {c, r})
+                c = c + d[1]
+                r = r + d[2]
+            end
+            table.insert(output, line)
         end
-
-        local c2 = col
-        local r2 = row
-        for i = col, 1, -1 do
-            c2 = c2 - 1
-            r2 = r2 - 1
-            table.insert(possible_pos, {c2, r2})
-        end
+        return output
     end
-
-    local function Biship()
-        insert_diagonal_pos()
+    
+    local function Bishop()
+        local dirs_bishop = {{-1, 1}, {1, 1}, {-1, -1}, {1, -1}}
+        possible_table = insert_vector_pos(dirs_bishop, col, row)
+        print(possible_table)
+    end
+    
+    local function is_valid_pos(c, r)
+        return c > 0 and c < 9 and r > 0 and r < 9
     end
 
     local function King()
-        
+        local c, r = col, row
+        local dirs_king = {{-1, 1}, {1, 1}, {-1, -1}, {1, -1}, {0, 1}, {0, -1}, {-1, 0}, {1, 0}}
+        local output = {}
+        for _, pos in ipairs(dirs_king) do
+            local new_c = c + pos[1]
+            local new_r = r + pos[2]
+            if is_valid_pos(new_c, new_r) then
+                table.insert(output, {new_c, new_r})
+            end
+        end
+        possible_table = { output } -- 包裹一层， 保持和其他的一样的三层 table
     end
-
+    
     local function Knight()
-        
+        local c, r = col, row
+        local dirs_king = {{-1, 2}, {-2, 1}, {1, 2}, {2, 1}, {-2, -1}, {-1, -2}, {2, -1}, {1, -2}}
+        local output = {}
+        for _, pos in ipairs(dirs_king) do
+            local new_c = c + pos[1]
+            local new_r = r + pos[2]
+            if is_valid_pos(new_c, new_r) then
+                table.insert(output, {new_c, new_r})
+            end
+        end
+        possible_table = { output } -- 包裹一层， 保持和其他的一样的三层 table
     end
-
+    
     local function Pawn()
-        
-    end
+        if not piece.has_moved then
+            possible_table = {{{col, row + 2}, {col, row + 1}}}
+        else
+            if is_valid_pos(col, row + 1) then
+                possible_table = {{{col, row + 1}}}
+            end
+        end
 
-    local function Qween()
-        insert_diagonal_pos()
+        -- BUG: 这个还没有测试的！！
+        -- 插入 en passant 的位置
+        if EN_PASSANT_TARGET ~= nil then
+            table.insert(possible_table, {{}})
+        end
     end
-
+    
+    local function Queen()
+        local dirs_queen = {{-1, 1}, {1, 1}, {-1, -1}, {1, -1}, {0, 1}, {0, -1}, {-1, 0}, {1, 0}}
+        possible_table = insert_vector_pos(dirs_queen, col, row)
+    end
+    
     local function Rook()
-        
+        local dirs_rook = {{0, 1}, {0, -1}, {-1, 0}, {1, 0}}
+        possible_table = insert_vector_pos(dirs_rook, col, row)
     end
-
+    
+    
     local piece_type = piece:name():sub(2, 2)
-    if     piece_type == 'B' then Biship()
-    elseif piece_type == 'K' then King()
+    if     piece_type == 'B' then Bishop() 
+    elseif piece_type == 'Q' then Queen() 
+    elseif piece_type == 'R' then Rook()
+    elseif piece_type == 'K' then King() 
     elseif piece_type == 'N' then Knight()
     elseif piece_type == 'P' then Pawn()
-    elseif piece_type == 'Q' then Qween()
-    elseif piece_type == 'R' then Rook()
     else error("You stupid fucking bitch.")
     end
 
-    -- 画出来
-    for _, pos in pairs(possible_pos) do
-        draw_gray_spot(pos[1], pos[2])
+    -- 画出灰色点点来。 这个函数是在原来 draw_gray_spot 函数的基础上加了拆包
+    local function _draw_gray_spots(possible_pos)
+        if possible_pos == nil then return end
+        for _, line in ipairs(possible_pos) do
+            for _, pos in ipairs(line) do
+                if pos == nil then return end
+                draw_gray_spot(pos[1], pos[2])
+            end
+        end 
     end
-end
 
+    _draw_gray_spots(possible_table)
+end
 return render

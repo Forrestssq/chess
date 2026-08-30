@@ -13,9 +13,23 @@ local load_board = require 'src.utils.load_opening_pieces_status'
 START_WITH = 'black'
 BOARD = load_board(START_WITH)
 
+-- 记录轮到谁了
+TURN = START_WITH
+
+-- 轮到对方了的时候调用。 会改变 TURN 的值(black or white)
+function turn_turn()
+    TURN = (TURN == 'white') and 'black' or 'white'
+end
+
+-- 记录是不是可以吃过路兵。 这个记录的是可以吃过路兵所走的格子。 
+-- 比如记录有 { 3, 3 } 则表示 对方可以下 { 3, 3 } 这个格子来吃掉白方的过路兵。
+-- 如果没有 ，则为 nil 
+EN_PASSANT_TARGET = nil
+
 render = require 'src.utils.render'
 
 local coord = require("src.utils.coord")
+local BOARD_adjust = require("src.utils.BOARD_adjust")
 
 -- 记录是否有棋子被选中
 local selected = false
@@ -69,19 +83,30 @@ function love.mousepressed(x, y, button, istouch, presses)
     end
 
     -- 移动棋子
+    ---@diagnostic disable: need-check-nil
     if selected and ((col ~= selected_col) or (row ~= selected_row)) then
-        ---@diagnostic disable-next-line
-        local piece = BOARD[selected_col][selected_row]
-        ---@diagnostic disable-next-line
-        BOARD[selected_col][selected_row] = 0
-        ---@diagnostic disable-next-line
-        BOARD[col][row] = piece
-        selected_col = col
-        selected_row = row
+        local unified_input = {selected_col, selected_row, col, row} -- 把位置打包传给他
+
+        if coord.is_en_passant_move() then
+            BOARD_adjust.en_passant(unified_input)
+        elseif coord.is_queenside_castling_move() then
+            BOARD_adjust.castle_queenside(unified_input)
+        elseif coord.is_rookside_castling_move() then
+            BOARD_adjust.castle_rookside(unified_input)
+        else -- 正常的移动棋子的情况
+            if BOARD[col][row] ~= 0 then
+                BOARD_adjust.eat_piece(unified_input)
+            else
+                BOARD_adjust.move_piece(unified_input)
+            end
+        end
+        coord.has_moved(col, row) -- 要用 col 而不是 selected_col 因为上面的 BOARD_adjust 函数门已经把棋盘上的棋子改过了
         selected = false    -- 下一步棋之后取消选中
         selected_col = nil  -- 清空
         selected_row = nil  -- 清空
     end
+
+
 end
 
 function love.mousereleased(x, y, button, istouch, presses)

@@ -38,4 +38,25 @@ function coord.is_click_valid(col, row)
     return value
 end
 
+---@return boolean
+function coord.is_en_passant_move()
+    return false    
+end
+
+---@return boolean
+function coord.is_queenside_castling_move()
+    return false    
+end
+
+---@return boolean
+function coord.is_rookside_castling_move()
+    return false    
+end
+
+-- 把 Piece 里面的 has_moved 标记改为 true
+function coord.has_moved(col, row)
+    local piece = BOARD[col][row]
+    piece.has_moved = true
+end
+
 return coord
