@@ -52,10 +52,12 @@ function love.mousepressed(x, y, button, istouch, presses)
 
     local col, row = coord.pixel_to_cell(x, y)
     
+    -- 单击选中棋子
     if coord.is_click_valid(col, row) then
-        print("______I'm in_______")
-        -- 两次点击的话， 当作取消
-        if (col == selected_col) and (row == selected_row) then
+        if (col == selected_col) and (row == selected_row) then 
+        -- 两次点击同一个棋子， 当作取消。
+        -- 若先前未选中棋子， 则 selected_col 和 selected_row 都是 nil ，不会进入这个逻辑
+        -- 若已经 selected 的话， 则表示已经进入过 下面的 else 逻辑 。然后你就知道怎么回事了
             selected = false
             selected_col = nil
             selected_row = nil
@@ -77,9 +79,9 @@ function love.mousepressed(x, y, button, istouch, presses)
         selected_col = col
         selected_row = row
         selected = false    -- 下一步棋之后取消选中
+        selected_col = nil  -- 清空
+        selected_row = nil  -- 清空
     end
-    print('\n')
-
 end
 
 function love.mousereleased(x, y, button, istouch, presses)
