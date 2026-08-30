@@ -17,7 +17,7 @@ BOARD = load_board(START_WITH)
 TURN = START_WITH
 
 -- 轮到对方了的时候调用。 会改变 TURN 的值(black or white)
-function turn_turn()
+function TURN_TURN()
     TURN = (TURN == 'white') and 'black' or 'white'
 end
 
@@ -26,7 +26,7 @@ end
 -- 如果没有 ，则为 nil 
 EN_PASSANT_TARGET = nil
 
-render = require 'src.utils.render'
+Render = require 'src.utils.render'
 
 local coord = require("src.utils.coord")
 local BOARD_adjust = require("src.utils.BOARD_adjust")
@@ -43,12 +43,13 @@ function love.update(dt)
 end
 
 function love.draw()
-    render.draw_chessboard() -- 画棋盘
-    if selected then
-        render.highlight_piece(selected_col, selected_row)
-        render.render_possible_pos(BOARD[selected_col][selected_row], selected_col, selected_row)
+    Render.draw_chessboard() -- 画棋盘
+    if selected and selected_row and selected_col then
+        Render.highlight_piece(selected_col, selected_row)
+        ---@diagnostic disable-next-line
+        Render.render_possible_pos(BOARD[selected_col][selected_row], selected_col, selected_row)
     end
-    render.display()
+    Render.display()
 end
 
 function love.keypressed(key)

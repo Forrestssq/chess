@@ -56,6 +56,7 @@ function render.display()
     for col = 1, 8 do
         for row = 1, 8 do
             if BOARD[col][row] ~= 0 then
+                ---@diagnostic disable-next-line
                 local name = BOARD[col][row]:name()
                 local icon = PIECES_ICON_DICT[name]
                 render.draw_piece(icon, col, row)
@@ -91,7 +92,7 @@ end
 -- 画出灰色的提示
 ---@param col number
 ---@param row number
-function draw_gray_spot(col, row)
+function render.draw_gray_spot(col, row)
     local r, y, b, a = love.graphics.getColor()
     love.graphics.setColor(0.6, 0.6, 0.6, 0.5)
     love.graphics.circle(
@@ -139,7 +140,7 @@ function render.render_possible_pos(piece, col, row)
         return output
     end
     
-    -- 与
+    -- 与上面类似， 但是专用于 KN
     local function insert_vector_pos_KN(dirs, col, row)
         local output = {}
         for _, pos in ipairs(dirs) do
@@ -211,7 +212,7 @@ function render.render_possible_pos(piece, col, row)
         for _, line in ipairs(possible_pos) do
             for _, pos in ipairs(line) do
                 if pos == nil then return end
-                draw_gray_spot(pos[1], pos[2])
+                render.draw_gray_spot(pos[1], pos[2])
             end
         end 
     end

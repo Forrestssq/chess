@@ -3,7 +3,7 @@ local function load_opening_board_status(start_w_or_b)
     ---@type (Piece | integer)[][]
     local opening_board_status = {}    
 
-    ---@diagnostic disable: call-non-callable, need-check-nil
+    ---@diagnostic disable: need-check-nil
     -- 先创建 8x8 的列表，用 0 填满
     for i = 1, 8 do
         opening_board_status[i] = {}
