@@ -11,4 +11,15 @@ function tools.remove_items_after_index(target_array, index)
     return target_array
 end
 
+--- 对 table 进行 deepcopy , 返回这个新的 table
+---@param target table
+---@return table
+function tools.deepcopy_table(target)
+    local output = {}
+    for _, v in ipairs(target) do
+        table.insert(output, v)
+    end
+    return output
+end
+
 return tools

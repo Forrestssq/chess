@@ -87,7 +87,6 @@ function render.highlight_selected_pieces(col, row)
 
     -- 重新设定回原来的颜色
     love.graphics.setColor(r, g, b, a)
-    love.graphics.setLineWidth(w)
 end
 
 -- 画出灰色的提示
@@ -117,6 +116,14 @@ function render.highlight_eatable_pieces(col, row)
         TILE,
         TILE
     )
+    love.graphics.setColor(0.9, 0.9, 0.9) -- 这个矩形负责给高亮加上一个和棋盘底色同色的外框
+        love.graphics.rectangle(
+        "line",
+        TILE * (col - 1),
+        TILE * (8 - row),
+        TILE,
+        TILE
+    )
     love.graphics.setColor(r, g, b, a)
 end
 
@@ -128,7 +135,17 @@ function render.render_possible_pos(piece, col, row)
     ---@type table
     local possible_table
 
+    ---判断一个位置是不是在 8x8 的格子里面
+    ---接受两种方式的参数：
+    ---1. col + row
+    ---2. pos (是一个table， pos[1] = col, pos[2] = row)
+    ---@param c any
+    ---@param r any
+    ---@return boolean
     local function is_valid_pos(c, r)
+        if r == nil and type(c) == "table" then
+            c, r = c[1], c[2]
+        end
         return c > 0 and c < 9 and r > 0 and r < 9
     end
 
@@ -178,7 +195,11 @@ function render.render_possible_pos(piece, col, row)
         possible_table[line_index] = tools.remove_items_after_index(possible_table[line_index], target_index)
     end
 
+    --- 注意，这个直接从 possible_table 里面移除位置
+    --- 是给 BQR 用的， 如果他的走向的位置上有棋子，那么移除它
+    --- 如果有可以吃的子， 放到 EATABLE_PIECES_POS_TABLE 中
     local function truncate_after_block_BQR()
+        if possible_table == nil then return end
         for index_1, line in ipairs(possible_table) do
             for index_2, pos in ipairs(line) do
                 if board_tools.has_piece(pos[1], pos[2]) then
@@ -191,9 +212,11 @@ function render.render_possible_pos(piece, col, row)
     end
 
     --- 注意，这个直接从 possible_table 里面移除位置
-    --- 是给 RKP 用的， 如果他的走向的位置上有棋子，那么移除它
+    --- 是给 RK 用的， 如果他的走向的位置上有棋子，那么移除它
+    --- 如果有可以吃的子， 放到 EATABLE_PIECES_POS_TABLE 中
     ---@return nil
-    local function remove_blocked_pos_RKP()
+    local function remove_blocked_pos_RK()
+        if possible_table == nil then return end
         for index, pos in ipairs(possible_table[1]) do -- 先剥去一层多余的 table 
             if board_tools.has_piece(pos[1], pos[2]) then
                 board_tools.insert_eatable_piece(pos) --- 往这个全局table EATABLE_PIECES_POS_TABLE 里面插入可吃的位置
@@ -201,6 +224,27 @@ function render.render_possible_pos(piece, col, row)
             end
         end
     end 
+    --- 注意，这个直接从 possible_table 里面移除位置
+    --- 是给 P 用的， 如果他的走向的位置上有棋子，那么移除它
+    --- 如果它的左右侧有可以吃的子， 放到 EATABLE_PIECES_POS_TABLE  中
+    ---@return nil
+    local function remove_blocked_pos_P()
+        if possible_table == nil then return end
+        for index, pos in ipairs(possible_table[1]) do -- 先剥去一层多余的 table 
+            if board_tools.has_piece(pos[1], pos[2]) then
+                possible_table[1][index] = nil
+            end
+        end
+
+        local attack_pos = {{col + 1, row + 1}, {col - 1, row + 1}}
+        for _, pos in ipairs(attack_pos) do
+            if is_valid_pos(pos) then
+                if board_tools.has_piece(pos[1], pos[2]) then
+                    board_tools.insert_eatable_piece(pos) --- 往这个全局table EATABLE_PIECES_POS_TABLE 里面插入可吃的位置
+                end
+            end
+        end
+    end
 
     local function Bishop()
         local dirs_bishop = {{-1, 1}, {1, 1}, {-1, -1}, {1, -1}}
@@ -223,13 +267,13 @@ function render.render_possible_pos(piece, col, row)
     local function King()
         local dirs_king = {{-1, 1}, {1, 1}, {-1, -1}, {1, -1}, {0, 1}, {0, -1}, {-1, 0}, {1, 0}}
         insert_vector_pos_KN(dirs_king, col, row)
-        remove_blocked_pos_RKP()
+        remove_blocked_pos_RK()
     end
     
     local function Knight()
         local dirs_king = {{-1, 2}, {-2, 1}, {1, 2}, {2, 1}, {-2, -1}, {-1, -2}, {2, -1}, {1, -2}}
         insert_vector_pos_KN(dirs_king, col, row)
-        remove_blocked_pos_RKP()
+        remove_blocked_pos_RK()
     end
     
     local function Pawn()
@@ -241,7 +285,7 @@ function render.render_possible_pos(piece, col, row)
             end
         end
 
-        remove_blocked_pos_RKP()
+        remove_blocked_pos_P()
 
         -- BUG: 这个还没有测试的！！
         -- 插入 en passant 的位置

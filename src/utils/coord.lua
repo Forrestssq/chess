@@ -30,8 +30,8 @@ function coord.is_click_valid(col, row)
     if value == 0 then
         return false
     end
-
-    local piece_name =  value:name()
+    ---@diagnostic disable-next-line
+    local piece_name = value:name()
     if START_WITH:sub(1, 1) ~= piece_name:sub(1, 1) then
         return false
     end
@@ -56,8 +56,9 @@ end
 
 -- 把 Piece 里面的 has_moved 标记改为 true
 function coord.has_moved(col, row)
-    local piece = BOARD[col][row]
-    piece.has_moved = true
+    -- 用原来的 先取出来 piece 然后再修改也可以，
+    -- 因为对于 table 的值是 shallow copy
+    BOARD[col][row].has_moved = true
 end
 
 return coord
