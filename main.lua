@@ -123,7 +123,7 @@ function love.mousepressed(x, y, button, istouch, presses)
         end
         coord.has_moved(col, row) -- 要用 col 而不是 selected_col 因为上面的 BOARD_adjust 函数门已经把棋盘上的棋子改过了
         selected = false    -- 下一步棋之后取消选中
-        TURN_TURN() -- 轮到对面下棋了
+        -- TURN_TURN() -- 轮到对面下棋了
     end
 end
 

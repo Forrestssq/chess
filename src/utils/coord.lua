@@ -32,7 +32,7 @@ function coord.is_click_valid(col, row)
     end
     ---@diagnostic disable-next-line
     local piece_name = value:name()
-    if START_WITH:sub(1, 1) ~= piece_name:sub(1, 1) then
+    if TURN:sub(1, 1) ~= piece_name:sub(1, 1) then
         return false
     end
     ---@diagnostic disable

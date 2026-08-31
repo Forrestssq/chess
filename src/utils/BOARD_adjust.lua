@@ -6,31 +6,41 @@ local function unpack_unified_input(input)
     return input[1], input[2], input[3], input[4]
 end
 
--- 只移动不吃子
+--- 只移动不吃子
+--- 在移动后， TURN_TURN() 反转到对方
 ---@param input table
 function BOARD_adjust.move_piece(input)
     local old_c, old_r, new_c, new_r = unpack_unified_input(input)
     BOARD[new_c][new_r] = BOARD[old_c][old_r]
     BOARD[old_c][old_r] = 0
+    TURN_TURN() -- 反转到对方
 end
 
--- 正常吃子
+--- 正常吃子
+--- 在移动后， TURN_TURN() 反转到对方
 function BOARD_adjust.eat_piece(input)
     local old_c, old_r, new_c, new_r = unpack_unified_input(input)
     BOARD[new_c][new_r] = BOARD[old_c][old_r]
     BOARD[old_c][old_r] = 0
+    TURN_TURN()
 end
 
+--- 在移动后， TURN_TURN() 反转到对方
 function BOARD_adjust.castle_queenside(input)
     local old_c, old_r, new_c, new_r = unpack_unified_input(input)
+    TURN_TURN()
 end
 
+--- 在移动后， TURN_TURN() 反转到对方
 function BOARD_adjust.castle_rookside(input)
     local old_c, old_r, new_c, new_r = unpack_unified_input(input)
+    TURN_TURN()
 end
 
+--- 在移动后， TURN_TURN() 反转到对方
 function BOARD_adjust.en_passant(input)
     local old_c, old_r, new_c, new_r = unpack_unified_input(input)
+    TURN_TURN()
 end
 
 return BOARD_adjust

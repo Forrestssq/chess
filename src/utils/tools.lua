@@ -22,4 +22,49 @@ function tools.deepcopy_table(target)
     return output
 end
 
+--- 查询一个表格自己的名字本身。
+--- 通过地址去存放着全局变量的表格 _G 中查找出来名字
+--- 没找到的话， 返回 table not found
+---@param target_table any
+---@return unknown
+function tools.get_table_name(target_table)
+    for name, value in pairs(_G) do
+        if value == target_table then
+            return name
+        end
+    end
+    return " table not found "
+end
+
+---调试用的
+---@param t table
+function tools.print_table(t)
+    for index, value in ipairs(t) do
+        if type(value) == 'table' then
+            tools.print_table(value)
+        else
+            print(index .. '\t' .. tostring(value))
+        end
+    end
+end
+
+--- 调试用
+--- 打印出来传入的位置上的棋子的名字
+--- 可以传 col 和 row
+--- 也可以传入一个 pos table， 打包有 col 和 row
+---@param col number | table
+---@param row number
+function tools.print_piece_type(col, row)
+    if type(col) == 'table' then
+        col = col[1]
+        row = col[2]
+    end
+    local value = BOARD[col][row]
+    if value == 0 then
+        print("Empty")
+    else
+        print(value:name())
+    end
+end
+
 return tools

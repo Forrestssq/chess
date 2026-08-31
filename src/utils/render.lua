@@ -220,23 +220,46 @@ function render.render_possible_pos(piece, col, row)
         for index, pos in ipairs(possible_table[1]) do -- 先剥去一层多余的 table 
             if board_tools.has_piece(pos[1], pos[2]) then
                 board_tools.insert_eatable_piece(pos) --- 往这个全局table EATABLE_PIECES_POS_TABLE 里面插入可吃的位置
-                possible_table[1][index] = nil
+                table.remove(possible_table[1], index)
             end
         end
     end 
+    
     --- 注意，这个直接从 possible_table 里面移除位置
     --- 是给 P 用的， 如果他的走向的位置上有棋子，那么移除它
     --- 如果它的左右侧有可以吃的子， 放到 EATABLE_PIECES_POS_TABLE  中
     ---@return nil
-    local function remove_blocked_pos_P()
+    local function remove_blocked_pos_P_your_side()
         if possible_table == nil then return end
         for index, pos in ipairs(possible_table[1]) do -- 先剥去一层多余的 table 
             if board_tools.has_piece(pos[1], pos[2]) then
-                possible_table[1][index] = nil
+                table.remove(possible_table[1], index)
             end
         end
 
         local attack_pos = {{col + 1, row + 1}, {col - 1, row + 1}}
+        for _, pos in ipairs(attack_pos) do
+            if is_valid_pos(pos) then
+                if board_tools.has_piece(pos[1], pos[2]) then
+                    board_tools.insert_eatable_piece(pos) --- 往这个全局table EATABLE_PIECES_POS_TABLE 里面插入可吃的位置
+                end
+            end
+        end
+    end
+
+    --- 注意，这个直接从 possible_table 里面移除位置
+    --- 是给 P 用的， 如果他的走向的位置上有棋子，那么移除它
+    --- 如果它的左右侧有可以吃的子， 放到 EATABLE_PIECES_POS_TABLE  中
+    ---@return nil
+    local function remove_blocked_pos_P_other_side()
+        if possible_table == nil then return end
+        for index, pos in ipairs(possible_table[1]) do -- 先剥去一层多余的 table 
+            if board_tools.has_piece(pos[1], pos[2]) then
+                table.remove(possible_table[1], index)
+            end
+        end
+
+        local attack_pos = {{col - 1, row - 1}, {col + 1, row - 1}}
         for _, pos in ipairs(attack_pos) do
             if is_valid_pos(pos) then
                 if board_tools.has_piece(pos[1], pos[2]) then
@@ -277,15 +300,25 @@ function render.render_possible_pos(piece, col, row)
     end
     
     local function Pawn()
-        if not piece.has_moved then
-            possible_table = {{{col, row + 2}, {col, row + 1}}}
-        else
-            if is_valid_pos(col, row + 1) then
-                possible_table = {{{col, row + 1}}}
+        if START_WITH == TURN then
+            if not piece.has_moved then
+                possible_table = {{{col, row + 2}, {col, row + 1}}}
+            else
+                if is_valid_pos(col, row + 1) then
+                    possible_table = {{{col, row + 1}}}
+                end
             end
+            remove_blocked_pos_P_your_side()            
+        else
+            if not piece.has_moved then
+                possible_table = {{{col, row - 2}, {col, row - 1}}}
+            else
+                if is_valid_pos(col, row - 1) then
+                    possible_table = {{{col, row - 1}}}
+                end
+            end
+            remove_blocked_pos_P_other_side()
         end
-
-        remove_blocked_pos_P()
 
         -- BUG: 这个还没有测试的！！
         -- 插入 en passant 的位置
