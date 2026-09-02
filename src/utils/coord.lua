@@ -5,9 +5,14 @@ local coord = {}
 ---@param y number
 ---@return integer, integer
 function coord.pixel_to_cell(x, y)
-
     local col = math.ceil(x / TILE)
     local row = 9 - math.ceil(y / TILE)
+    if col > 8 then col = 8
+    elseif col < 0 then col = 0 end
+
+    if row > 8 then row = 8
+    elseif row < 0 then row = 0 end
+    
     return col, row
 end
 
@@ -52,13 +57,6 @@ end
 ---@return boolean
 function coord.is_rookside_castling_move()
     return false    
-end
-
--- 把 Piece 里面的 has_moved 标记改为 true
-function coord.has_moved(col, row)
-    -- 用原来的 先取出来 piece 然后再修改也可以，
-    -- 因为对于 table 的值是 shallow copy
-    BOARD[col][row].has_moved = true
 end
 
 return coord

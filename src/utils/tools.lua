@@ -1,14 +1,13 @@
 local tools = {}
 
---- 把 array 从 index 位置开始往后删完（包括 index 项本身）。 返回删完的 table
+--- 把 array 从 index 位置开始往后删完（包括 index 项本身）。
 ---@param target_array table
 ---@param index number
----@return table
+---@return nil
 function tools.remove_items_after_index(target_array, index)
     for i = #target_array, index, -1 do
         target_array[i] = nil
     end
-    return target_array
 end
 
 --- 对 table 进行 deepcopy , 返回这个新的 table
@@ -36,16 +35,23 @@ function tools.get_table_name(target_table)
     return " table not found "
 end
 
----调试用的
----@param t table
-function tools.print_table(t)
-    for index, value in ipairs(t) do
-        if type(value) == 'table' then
-            tools.print_table(value)
-        else
-            print(index .. '\t' .. tostring(value))
+---调试用, 打印 POSSIBLE_TABLE
+function tools.print_POSSIBLE_table()
+    print('POSSIBLE_TABLE')
+    for index_1, line in ipairs(POSSIBLE_TABLE) do
+        for index_2, pos in ipairs(line) do
+            io.write(pos[1], '\t', pos[2], '\n')
         end
     end
+    print()
+end
+
+function tools.print_EATABLE_TABLE()
+    print("EATABLE_TABLE")
+    for index, pos in ipairs(EATABLE_TABLE) do
+        io.write(pos[1], '\t', pos[2], '\n')
+    end
+    print()
 end
 
 --- 调试用
@@ -56,13 +62,14 @@ end
 ---@param row number
 function tools.print_piece_type(col, row)
     if type(col) == 'table' then
-        col = col[1]
         row = col[2]
+        col = col[1]
     end
     local value = BOARD[col][row]
     if value == 0 then
         print("Empty")
     else
+        ---@diagnostic disable-next-line
         print(value:name())
     end
 end
